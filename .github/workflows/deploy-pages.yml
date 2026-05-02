@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - copilot/build-project-for-public-access
       - copilot/get-project-preview-url
   workflow_dispatch:
 
