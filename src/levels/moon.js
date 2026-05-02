@@ -1,21 +1,19 @@
-// Tile type constants
-export const TILE_EMPTY = 0
-export const TILE_BLOCKER = 1
-export const TILE_CRATER = 2
-export const TILE_SAND = 3
-export const TILE_ICE = 4
-export const TILE_TELEPORT = 5
-
-// Moon Chapter — 10 Levels (7x7 and 8x8 grids)
+// ─────────────────────────────────────────────────────────────────────────────
+// Moon Chapter — 10 Levels
 // Tile types: 0=empty, 1=blocker, 2=crater
-// No ice, sand, or teleport in moon chapter
+//
+// Core mechanic: player GLIDES until hitting a wall, blocker, or the goal tile.
+// Craters kill the player (automatic restart).
+// Each level's solution path is annotated inline.
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const moonLevels = [
+  // ── Level 1 ────────────────────────────────────────────────────────────────
   {
     id: 1,
-    name: "First Steps",
+    name: 'First Steps',
     chapter: 'moon',
-    narrative: "You crash-landed on the Moon. The low gravity lets you glide across the surface — use the rocks to stop.",
+    narrative: 'You crash-landed on the Moon. Low gravity lets you glide across the surface — slide right to the beacon.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -25,199 +23,241 @@ export const moonLevels = [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
     ],
+    // Solution: → (right) → goal stops at (6,3). 1 move.
     playerStart: { x: 0, y: 3 },
-    goal: { x: 6, y: 3 },
+    goal:        { x: 6, y: 3 },
     collectibles: [],
-    teleports: []
+    teleports:    [],
   },
+
+  // ── Level 2 ────────────────────────────────────────────────────────────────
   {
     id: 2,
-    name: "Rock Block",
+    name: 'Corner Shot',
     chapter: 'moon',
-    narrative: "The boulders are scattered but useful. Use them to redirect your path.",
+    narrative: 'The boulders channel you — slide right then turn upward.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
-      [0,0,0,1,0,0,0],
       [0,0,0,0,0,0,0],
-      [0,0,0,1,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
     ],
-    // Player at (0,3): slides right, stops at (2,3). Then slide up → stops at (2,1). Then slide right → stops at (6,1). Then slide down → stops at (6,3) = goal
-    playerStart: { x: 0, y: 3 },
-    goal: { x: 6, y: 3 },
+    // Solution: → (6,6) wall, ↑ (6,0) = goal. 2 moves.
+    playerStart: { x: 0, y: 6 },
+    goal:        { x: 6, y: 0 },
     collectibles: [],
-    teleports: []
+    teleports:    [],
   },
+
+  // ── Level 3 ────────────────────────────────────────────────────────────────
   {
     id: 3,
-    name: "Zigzag",
+    name: 'Detour',
     chapter: 'moon',
-    narrative: "The terrain channels you through twisting corridors of rock.",
+    narrative: 'A boulder blocks the direct path. Find a way around.',
     grid: [
-      [1,0,0,0,0,0,1],
-      [0,0,1,0,0,0,0],
-      [0,0,0,0,1,0,0],
+      [0,0,0,0,1,0,0],  // blocker at (4,0)
       [0,0,0,0,0,0,0],
-      [0,0,1,0,0,0,0],
-      [0,0,0,0,0,1,0],
-      [1,0,0,0,0,0,1],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
     ],
-    // From (0,3) go right → (6,3), then up → (6,0)... need to rethink
-    // Player (0,3) → right → stops at (6,3)... that's goal directly. Let's place goal at different spot
-    // Redefine: Player (0,1), Goal (6,5)
-    // (0,1) right → (1,1) stops at rock (2,1)? No, stops before blocker → (1,1)
-    // Actually let's do: (0,3) down → (0,5), right → (5,5) stops before (6,5) blocker... 
-    // Let me rethink with simpler path
-    playerStart: { x: 0, y: 2 },
-    goal: { x: 6, y: 4 },
+    // Solution A (2 moves): ↑ → (0,0), → stops at goal (3,0) before blocker.
+    // Solution B (3 moves): → (6,3), ↑ (6,0), ← goal stops at (3,0).
+    playerStart: { x: 0, y: 3 },
+    goal:        { x: 3, y: 0 },
     collectibles: [],
-    teleports: []
+    teleports:    [],
   },
+
+  // ── Level 4 ────────────────────────────────────────────────────────────────
   {
     id: 4,
-    name: "Crater Field",
+    name: 'Crater Lesson',
     chapter: 'moon',
-    narrative: "Ancient craters pock the surface. Fall in and it's over.",
+    narrative: 'Ancient craters dot the surface. Fall in and it\'s over — detour around the danger zone.',
     grid: [
-      [0,0,0,1,0,0,0],
       [0,0,0,0,0,0,0],
-      [0,0,2,0,0,2,0],
       [0,0,0,0,0,0,0],
-      [0,0,2,0,0,2,0],
       [0,0,0,0,0,0,0],
-      [0,0,0,1,0,0,0],
+      [0,0,0,2,0,0,0],  // crater at (3,3)
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
     ],
-    // (0,3) right → stops at (6,3)... no blocker until wall. 
-    // Goal at (6,3), player at (0,3): just slides right but craters at (2,3)? No craters on row 3.
-    // Row 3 is all zeros → slides right to (6,3) = goal. Too easy.
-    // Player: (0,0), goal: (6,6)
-    // (0,0) right → (2,0) stops before blocker at (3,0)
-    // (2,0) down → (2,1) stops? No blockers... slides to (2,5) stops before... no falls in (2,2) crater → fail
-    // Need safer path: (0,0) down → (0,6), right → (2,6) stops before (3,6)? No blocker there
-    // Adjust: player (0,3), goal (6,3), craters placed so direct slide is blocked
+    // Wrong: → CRATER at (3,3). Dead.
+    // Solution: ↓(0,6), →(6,6) right wall, ↑ goal stops at (6,3). 3 moves.
     playerStart: { x: 0, y: 3 },
-    goal: { x: 6, y: 3 },
+    goal:        { x: 6, y: 3 },
     collectibles: [],
-    teleports: []
+    teleports:    [],
   },
+
+  // ── Level 5 ────────────────────────────────────────────────────────────────
   {
     id: 5,
-    name: "Signal Cache",
+    name: 'Signal Cache',
     chapter: 'moon',
-    narrative: "Your distress beacon fragments are scattered. Collect them all before reaching the rescue pod.",
+    narrative: 'A distress beacon fragment lies in the crater field. Collect it before reaching the rescue pod.',
     grid: [
-      [0,0,0,0,0,0,0],
-      [0,1,0,0,0,1,0],
-      [0,0,0,0,0,0,0],
+      [0,0,0,0,1,0,0],  // blocker at (4,0)
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
-      [0,1,0,0,0,1,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
     ],
-    playerStart: { x: 0, y: 0 },
-    goal: { x: 6, y: 6 },
-    collectibles: [{ x: 2, y: 3 }],
-    teleports: []
+    // collectible at (3,0) — player must stop there (blocker at (4,0) stops rightward slide).
+    // Solution (5 moves):
+    //  ↑ (0,0)
+    //  → stops at (3,0) before blocker → COLLECT
+    //  ↓ (3,6) bottom wall
+    //  → (6,6) right wall
+    //  ↑ goal stops at (6,0). WIN.
+    playerStart: { x: 0, y: 3 },
+    goal:        { x: 6, y: 0 },
+    collectibles: [{ x: 3, y: 0 }],
+    teleports:    [],
   },
+
+  // ── Level 6 ────────────────────────────────────────────────────────────────
   {
     id: 6,
-    name: "Supply Drop",
+    name: 'Double Drop',
     chapter: 'moon',
-    narrative: "Three supply caches, scattered across the crater field. Don't miss a single one.",
+    narrative: 'Two caches, two corners. Collect both before escaping.',
     grid: [
       [0,0,0,0,0,0,0],
-      [0,0,1,0,1,0,0],
       [0,0,0,0,0,0,0],
-      [1,0,0,0,0,0,1],
       [0,0,0,0,0,0,0],
-      [0,0,1,0,1,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
     ],
-    playerStart: { x: 0, y: 0 },
-    goal: { x: 6, y: 6 },
-    collectibles: [{ x: 2, y: 0 }, { x: 4, y: 6 }, { x: 3, y: 3 }],
-    teleports: []
+    // collectibles at (0,3) and (6,6). Goal (6,0).
+    // Solution A (4 moves): ← (0,3) COLLECT, ↓ (0,6), → (6,6) COLLECT, ↑ (6,0) GOAL.
+    // Solution B (4 moves): → (6,3), ↓ (6,6) COLLECT, ← (0,6), ↑ (0,3)? player passes
+    //   through (0,3) and collects mid-slide, stops at (0,0). → goal at (6,0)? Slides right
+    //   to (6,0) = GOAL.  That's also 4 moves. Both A and B work.
+    playerStart: { x: 3, y: 3 },
+    goal:        { x: 6, y: 0 },
+    collectibles: [{ x: 0, y: 3 }, { x: 6, y: 6 }],
+    teleports:    [],
   },
+
+  // ── Level 7 ────────────────────────────────────────────────────────────────
   {
     id: 7,
-    name: "Crater Maze",
+    name: 'Twin Peaks',
     chapter: 'moon',
-    narrative: "The craters form a natural maze. Only one path leads safely through.",
+    narrative: 'The twin craters funnel every path. Navigate with care.',
     grid: [
-      [0,0,2,0,2,0,0,0],
-      [0,0,0,0,0,0,2,0],
-      [2,0,1,0,1,0,0,0],
       [0,0,0,0,0,0,0,0],
-      [0,0,1,0,1,0,0,0],
-      [0,2,0,0,0,0,0,2],
-      [0,0,0,2,0,2,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,1],  // blocker at (7,2)
+      [0,0,0,0,0,0,0,0],
+      [0,0,2,0,0,2,0,0],  // craters at (2,4) and (5,4)
+      [1,0,0,0,0,0,0,0],  // blocker at (0,5)
+      [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
     ],
-    playerStart: { x: 0, y: 3 },
-    goal: { x: 7, y: 3 },
+    // Solution (5 moves):
+    //  → (7,7) right wall
+    //  ↑ (7,3) stopped before blocker at (7,2)
+    //  ← (0,3) left wall
+    //  ↑ (0,0) top wall  [col 0: (0,4) is empty, (0,5)=blocker? going up from (0,3): (0,2),(0,1),(0,0)=top wall. Blocker at (0,5) is below row 3 so doesn't block.]
+    //  → goal stops at (7,0) = GOAL. WIN.
+    playerStart: { x: 0, y: 7 },
+    goal:        { x: 7, y: 0 },
     collectibles: [],
-    teleports: []
+    teleports:    [],
   },
+
+  // ── Level 8 ────────────────────────────────────────────────────────────────
   {
     id: 8,
-    name: "Boulder Run",
+    name: 'Crater Cross',
     chapter: 'moon',
-    narrative: "A dense boulder field. Every move matters — think ahead.",
+    narrative: 'One crater in column 0 seals the shortcut. Think around it.',
     grid: [
-      [0,0,0,0,0,1,0,0],
-      [0,1,0,0,0,0,0,0],
-      [0,0,0,1,0,0,0,1],
       [0,0,0,0,0,0,0,0],
-      [0,1,0,0,0,1,0,0],
-      [0,0,0,0,0,0,0,1],
-      [0,0,1,0,0,0,0,0],
-      [1,0,0,0,0,0,1,0],
+      [0,0,0,0,0,0,0,0],
+      [2,0,0,1,0,0,0,0],  // crater at (0,2), blocker at (3,2)
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,1,0,0,0],  // blocker at (4,7)
     ],
+    // Shortcut blocked: ↑ from (0,7) → hits crater at (0,2). Dead.
+    // Solution (4 moves):
+    //  → stops at (3,7) before blocker (4,7)
+    //  ↑ stops at (3,3) before blocker (3,2)
+    //  → (7,3) right wall
+    //  ↑ goal stops at (7,0). WIN.
     playerStart: { x: 0, y: 7 },
-    goal: { x: 7, y: 0 },
+    goal:        { x: 7, y: 0 },
     collectibles: [],
-    teleports: []
+    teleports:    [],
   },
+
+  // ── Level 9 ────────────────────────────────────────────────────────────────
   {
     id: 9,
-    name: "Last Cache",
+    name: 'Four Corners',
     chapter: 'moon',
-    narrative: "The final supply caches are deep in crater territory. Gather them all.",
+    narrative: 'Supply caches at opposite corners. Collect both — then escape.',
     grid: [
-      [0,0,0,2,0,0,0,0],
-      [0,1,0,0,0,0,1,0],
-      [0,0,0,0,2,0,0,0],
-      [2,0,0,0,0,0,0,2],
-      [0,0,0,2,0,0,0,0],
-      [0,1,0,0,0,0,1,0],
-      [0,0,0,0,2,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
     ],
-    playerStart: { x: 0, y: 7 },
-    goal: { x: 7, y: 0 },
-    collectibles: [{ x: 3, y: 7 }, { x: 7, y: 7 }, { x: 0, y: 0 }],
-    teleports: []
+    // collectibles: (7,0) and (0,7). Goal (7,7).
+    // Solution A: → (7,0) COLLECT, ↓ (7,7) [passes goal? Goal stops! Player stops at (7,7)=GOAL,
+    //   but (0,7) not collected yet!]. Correct: → (7,0) A, ↓ (7,7), ← (0,7) B, → (7,7) GOAL. 4 moves.
+    // Solution B: ↓ (0,7) B, → (7,7), ↑ (7,0) A, ↓ (7,7) GOAL. 4 moves.
+    playerStart: { x: 0, y: 0 },
+    goal:        { x: 7, y: 7 },
+    collectibles: [{ x: 7, y: 0 }, { x: 0, y: 7 }],
+    teleports:    [],
   },
+
+  // ── Level 10 ───────────────────────────────────────────────────────────────
   {
     id: 10,
     name: "Moon's Final Trial",
     chapter: 'moon',
-    narrative: "The hardest terrain on the Moon. Master every technique you've learned.",
+    narrative: 'The hardest terrain the Moon has to offer. Use everything you have learned.',
     grid: [
-      [0,0,1,0,2,0,1,0],
       [0,0,0,0,0,0,0,0],
-      [1,0,0,2,0,0,0,1],
-      [0,0,2,0,0,2,0,0],
-      [0,0,0,0,2,0,0,0],
-      [1,0,0,2,0,0,0,1],
       [0,0,0,0,0,0,0,0],
-      [0,1,0,2,0,1,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,2,0,0,0,0],  // crater at (3,3)
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0],
     ],
-    playerStart: { x: 0, y: 0 },
-    goal: { x: 7, y: 7 },
-    collectibles: [{ x: 3, y: 0 }, { x: 7, y: 0 }, { x: 0, y: 7 }],
-    teleports: []
-  }
+    // collectibles at (0,0) and (7,7). Goal (7,0).
+    // Solution (4 moves):
+    //  ↑ (0,0) COLLECT A (top-left wall)
+    //  → passes crater row? No: (0,0) going right → row 0, no crater. (7,0)=GOAL? But B not collected!
+    //  ↑ (0,0) A, ↓ (0,7) bottom, → (7,7) COLLECT B right wall, ↑ (7,0) GOAL. 4 moves. ✓
+    playerStart: { x: 0, y: 7 },
+    goal:        { x: 7, y: 0 },
+    collectibles: [{ x: 0, y: 0 }, { x: 7, y: 7 }],
+    teleports:    [],
+  },
 ]

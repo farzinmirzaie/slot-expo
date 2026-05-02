@@ -308,7 +308,8 @@ export class Game {
       state.playerPos,
       direction,
       levelData.teleports || [],
-      state.collected
+      state.collected,
+      levelData.goal
     )
 
     // Check if player actually moved
