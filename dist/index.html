@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>GLIDE — Puzzle Game</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000010;
+      overflow: hidden;
+      font-family: 'Courier New', monospace;
+      width: 100vw;
+      height: 100vh;
+    }
+    #canvas-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+    }
+    #canvas-container canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    #ui-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #loading-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000010;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      transition: opacity 0.5s ease;
+    }
+    #loading-title {
+      font-size: clamp(4rem, 12vw, 8rem);
+      font-weight: 900;
+      letter-spacing: 0.3em;
+      color: #00ffcc;
+      text-shadow:
+        0 0 20px #00ffcc,
+        0 0 40px #00ffcc,
+        0 0 80px #00aaff,
+        0 0 120px #0044ff;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    #loading-bar-container {
+      margin-top: 3rem;
+      width: 300px;
+      height: 4px;
+      background: rgba(0, 255, 200, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    #loading-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00ffcc, #0088ff);
+      box-shadow: 0 0 10px #00ffcc;
+      transition: width 0.3s ease;
+    }
+    #loading-text {
+      margin-top: 1rem;
+      color: rgba(0, 255, 200, 0.6);
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+    }
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc, 0 0 80px #00aaff; }
+      50% { text-shadow: 0 0 30px #00ffcc, 0 0 60px #00ffcc, 0 0 120px #00aaff, 0 0 200px #0044ff; }
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-2mhtY71J.js"></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="ui-overlay"></div>
+  <div id="loading-screen">
+    <div id="loading-title">GLIDE</div>
+    <div id="loading-bar-container">
+      <div id="loading-bar"></div>
+    </div>
+    <div id="loading-text">INITIALIZING...</div>
+  </div>
+</body>
+</html>
