@@ -4,12 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>GLIDE — Puzzle Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: #000010;
       overflow: hidden;
-      font-family: 'Courier New', monospace;
+      font-family: 'Orbitron', 'Courier New', monospace;
       width: 100vw;
       height: 100vh;
     }
@@ -37,18 +40,32 @@
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background: #000010;
+      background: radial-gradient(ellipse at center, #000830 0%, #000010 70%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 999;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.8s ease;
+    }
+    #loading-screen::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 204, 0.015) 2px,
+        rgba(0, 255, 204, 0.015) 4px
+      );
+      pointer-events: none;
     }
     #loading-title {
+      font-family: 'Orbitron', monospace;
       font-size: clamp(4rem, 12vw, 8rem);
       font-weight: 900;
-      letter-spacing: 0.3em;
+      letter-spacing: 0.4em;
       color: #00ffcc;
       text-shadow:
         0 0 20px #00ffcc,
@@ -57,43 +74,73 @@
         0 0 120px #0044ff;
       animation: pulse 2s ease-in-out infinite;
     }
+    #loading-subtitle {
+      font-family: 'Exo 2', sans-serif;
+      font-size: clamp(0.6rem, 2vw, 0.85rem);
+      font-weight: 300;
+      letter-spacing: 0.5em;
+      color: rgba(0, 255, 200, 0.4);
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+    }
     #loading-bar-container {
-      margin-top: 3rem;
-      width: 300px;
-      height: 4px;
-      background: rgba(0, 255, 200, 0.2);
+      margin-top: 3.5rem;
+      width: clamp(240px, 40vw, 360px);
+      height: 3px;
+      background: rgba(0, 255, 200, 0.12);
       border-radius: 2px;
       overflow: hidden;
+      position: relative;
     }
     #loading-bar {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #00ffcc, #0088ff);
-      box-shadow: 0 0 10px #00ffcc;
-      transition: width 0.3s ease;
+      background: linear-gradient(90deg, #00ffcc, #0088ff, #00ffcc);
+      background-size: 200% 100%;
+      box-shadow: 0 0 12px #00ffcc, 0 0 24px rgba(0,136,255,0.5);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: shimmer 1.5s linear infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
     #loading-text {
-      margin-top: 1rem;
-      color: rgba(0, 255, 200, 0.6);
-      font-size: 0.8rem;
-      letter-spacing: 0.2em;
+      margin-top: 1.2rem;
+      color: rgba(0, 255, 200, 0.5);
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+    }
+    #loading-dots {
+      display: inline-block;
+      width: 2em;
+      overflow: hidden;
+      vertical-align: bottom;
+      animation: dots 1.2s steps(4, end) infinite;
+    }
+    @keyframes dots {
+      0%  { width: 0; }
+      100% { width: 2em; }
     }
     @keyframes pulse {
-      0%, 100% { text-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc, 0 0 80px #00aaff; }
-      50% { text-shadow: 0 0 30px #00ffcc, 0 0 60px #00ffcc, 0 0 120px #00aaff, 0 0 200px #0044ff; }
+      0%, 100% { text-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc, 0 0 80px #00aaff; opacity: 1; }
+      50% { text-shadow: 0 0 30px #00ffcc, 0 0 60px #00ffcc, 0 0 120px #00aaff, 0 0 200px #0044ff; opacity: 0.95; }
     }
   </style>
-  <script type="module" crossorigin src="./assets/index-CnejZgQz.js"></script>
+  <script type="module" crossorigin src="./assets/index-B2A2sODc.js"></script>
 </head>
 <body>
   <div id="canvas-container"></div>
   <div id="ui-overlay"></div>
   <div id="loading-screen">
     <div id="loading-title">GLIDE</div>
+    <div id="loading-subtitle">A Neon Puzzle Adventure</div>
     <div id="loading-bar-container">
       <div id="loading-bar"></div>
     </div>
-    <div id="loading-text">INITIALIZING...</div>
+    <div id="loading-text">INITIALIZING<span id="loading-dots">...</span></div>
   </div>
 </body>
 </html>

@@ -295,6 +295,12 @@ export class Game {
     await this.transitions.fadeIn()
   }
 
+  _vibrate(pattern) {
+    try {
+      if (navigator.vibrate) navigator.vibrate(pattern)
+    } catch (e) { /* ignore */ }
+  }
+
   _handleMove(direction) {
     if (this.currentScene !== 'game') return
     if (this.inputLocked || this.gameScene.isAnimating) return
@@ -319,6 +325,7 @@ export class Game {
     }
 
     this.audio.playGlide()
+    this._vibrate(12)
     this.inputLocked = true
 
     // Filter newly collected to actual collectibles
@@ -339,10 +346,12 @@ export class Game {
       for (const item of actuallyCollected) {
         this.gameScene.collectItem(item)
         this.audio.playCollect()
+        this._vibrate(40)
       }
 
       if (result.fellInCrater) {
         this.audio.playFail()
+        this._vibrate([80, 40, 120])
         this.gameScene.craterFall(result.newPos, () => {
           this.inputLocked = false
           // Reset position after fail
@@ -398,6 +407,7 @@ export class Game {
   async _handleLevelComplete() {
     this.inputLocked = true
     this.audio.playGoal()
+    this._vibrate([50, 30, 50, 30, 100])
 
     const stars = this.stateManager.getStars()
     const moves = this.stateManager.getMoveCount()

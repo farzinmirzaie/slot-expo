@@ -31,14 +31,14 @@ export class LevelSelect {
         position: fixed;
         top: 0; left: 0;
         width: 100vw; height: 100vh;
-        background: rgba(0,0,16,0.95);
+        background: radial-gradient(ellipse at center, rgba(0,5,20,0.97) 0%, rgba(0,0,14,0.99) 100%);
         z-index: 30;
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 1.5rem;
         overflow-y: auto;
-        font-family: 'Courier New', monospace;
+        font-family: 'Orbitron', 'Courier New', monospace;
       }
       .ls-header {
         display: flex;
@@ -49,32 +49,37 @@ export class LevelSelect {
         max-width: 600px;
       }
       .ls-back {
-        background: transparent;
-        border: 1px solid rgba(0,255,200,0.3);
+        background: rgba(0,10,28,0.8);
+        border: 1px solid rgba(0,255,200,0.22);
         color: #00ffcc;
-        font-family: 'Courier New', monospace;
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
+        font-family: 'Orbitron', monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.15em;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.15s;
         -webkit-tap-highlight-color: transparent;
+        backdrop-filter: blur(4px);
       }
       .ls-back:hover {
         background: rgba(0,255,200,0.1);
-        border-color: #00ffcc;
+        border-color: rgba(0,255,200,0.6);
+        box-shadow: 0 0 12px rgba(0,255,200,0.25);
       }
       .ls-title {
-        font-size: 1.2rem;
+        font-family: 'Orbitron', monospace;
+        font-size: 1rem;
+        font-weight: 700;
         color: #00ffcc;
-        text-shadow: 0 0 12px #00ffcc;
-        letter-spacing: 0.2em;
+        text-shadow: 0 0 12px rgba(0,255,200,0.5);
+        letter-spacing: 0.25em;
         flex: 1;
         text-align: center;
       }
       .chapter-tabs {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.4rem;
         margin-bottom: 1.5rem;
         flex-wrap: wrap;
         justify-content: center;
@@ -82,85 +87,91 @@ export class LevelSelect {
         width: 100%;
       }
       .chapter-tab {
-        padding: 0.4rem 1rem;
-        background: rgba(0,20,40,0.8);
-        border: 1px solid rgba(0,255,200,0.2);
-        color: rgba(0,255,200,0.5);
-        font-family: 'Courier New', monospace;
-        font-size: 0.7rem;
+        padding: 0.45rem 1rem;
+        background: rgba(0,10,28,0.8);
+        border: 1px solid rgba(0,255,200,0.16);
+        color: rgba(0,255,200,0.45);
+        font-family: 'Orbitron', monospace;
+        font-size: 0.62rem;
         letter-spacing: 0.15em;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
         transition: all 0.15s;
         -webkit-tap-highlight-color: transparent;
       }
       .chapter-tab.active {
-        background: rgba(0,255,200,0.15);
-        border-color: #00ffcc;
+        background: rgba(0,255,200,0.1);
+        border-color: rgba(0,255,200,0.7);
         color: #00ffcc;
-        box-shadow: 0 0 10px rgba(0,255,200,0.3);
+        box-shadow: 0 0 12px rgba(0,255,200,0.25);
       }
       .chapter-tab.locked {
-        opacity: 0.3;
+        opacity: 0.28;
         cursor: not-allowed;
       }
       .chapter-tab:hover:not(.locked) {
-        border-color: rgba(0,255,200,0.5);
-        color: rgba(0,255,200,0.8);
+        border-color: rgba(0,255,200,0.45);
+        color: rgba(0,255,200,0.75);
       }
       .levels-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 0.75rem;
+        gap: 0.7rem;
         max-width: 600px;
         width: 100%;
       }
       .level-card {
-        background: rgba(0,15,30,0.9);
-        border: 1px solid rgba(0,255,200,0.15);
-        border-radius: 10px;
+        background: rgba(0,8,22,0.9);
+        border: 1px solid rgba(0,255,200,0.12);
+        border-radius: 12px;
         padding: 1rem;
         cursor: pointer;
         transition: all 0.2s ease;
         display: flex;
         flex-direction: column;
-        gap: 0.4rem;
+        gap: 0.35rem;
         position: relative;
         -webkit-tap-highlight-color: transparent;
+        backdrop-filter: blur(4px);
       }
       .level-card:hover:not(.locked) {
-        background: rgba(0,255,200,0.08);
-        border-color: rgba(0,255,200,0.4);
+        background: rgba(0,255,200,0.07);
+        border-color: rgba(0,255,200,0.38);
         transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(0,255,200,0.15);
+        box-shadow: 0 6px 22px rgba(0,255,200,0.12);
       }
       .level-card.locked {
-        opacity: 0.35;
+        opacity: 0.32;
         cursor: not-allowed;
         border-style: dashed;
       }
       .level-card.completed {
-        border-color: rgba(0,255,136,0.4);
-        background: rgba(0,255,136,0.05);
+        border-color: rgba(0,255,136,0.32);
+        background: rgba(0,255,136,0.04);
       }
       .level-number {
-        font-size: 0.6rem;
-        color: rgba(0,255,200,0.4);
+        font-family: 'Exo 2', sans-serif;
+        font-size: 0.58rem;
+        font-weight: 300;
+        color: rgba(0,255,200,0.35);
         letter-spacing: 0.2em;
+        text-transform: uppercase;
       }
       .level-name {
-        font-size: 0.75rem;
+        font-family: 'Orbitron', monospace;
+        font-size: 0.68rem;
+        font-weight: 700;
         color: #00ffcc;
-        font-weight: bold;
-        letter-spacing: 0.05em;
-        text-shadow: 0 0 8px rgba(0,255,200,0.4);
-        line-height: 1.3;
+        letter-spacing: 0.04em;
+        text-shadow: 0 0 8px rgba(0,255,200,0.35);
+        line-height: 1.35;
       }
       .level-stars {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         color: #ffcc00;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.08em;
         text-shadow: 0 0 6px rgba(255,200,0,0.5);
+        margin-top: 0.1rem;
       }
       .lock-icon {
         position: absolute;
