@@ -1,0 +1,16 @@
+{
+  "name": "glide-puzzle",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.163.0",
+    "postprocessing": "^6.36.0"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  }
+}
