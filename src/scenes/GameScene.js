@@ -40,47 +40,53 @@ export class GameScene {
     this.scene.background = new THREE.Color(0x000010)
     this.scene.fog = new THREE.FogExp2(0x000010, 0.03)
 
-    // Camera — isometric-ish perspective
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200)
-    this.camera.position.set(7, 10, 7)
+    // Camera — top-down perspective
+    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 200)
+    this.camera.position.set(3, 14, 5)
     this.camera.lookAt(0, 0, 0)
 
     // Lights
-    const ambient = new THREE.AmbientLight(0x112233, 2.0)
+    const ambient = new THREE.AmbientLight(0x0a1628, 3.0)
     this.scene.add(ambient)
     this.lights.push(ambient)
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 3)
-    dirLight.position.set(5, 10, 5)
+    const dirLight = new THREE.DirectionalLight(0xffffff, 4)
+    dirLight.position.set(3, 12, 5)
     dirLight.castShadow = true
-    dirLight.shadow.mapSize.width = 1024
-    dirLight.shadow.mapSize.height = 1024
+    dirLight.shadow.mapSize.width = 2048
+    dirLight.shadow.mapSize.height = 2048
     dirLight.shadow.camera.near = 0.1
-    dirLight.shadow.camera.far = 50
-    dirLight.shadow.camera.left = -10
-    dirLight.shadow.camera.right = 10
-    dirLight.shadow.camera.top = 10
-    dirLight.shadow.camera.bottom = -10
+    dirLight.shadow.camera.far = 60
+    dirLight.shadow.camera.left = -12
+    dirLight.shadow.camera.right = 12
+    dirLight.shadow.camera.top = 12
+    dirLight.shadow.camera.bottom = -12
+    dirLight.shadow.bias = -0.001
     this.scene.add(dirLight)
     this.lights.push(dirLight)
 
-    const fillLight = new THREE.PointLight(0x0044ff, 2, 30)
-    fillLight.position.set(-5, 5, -5)
+    const fillLight = new THREE.PointLight(0x0044ff, 3, 40)
+    fillLight.position.set(-5, 8, -5)
     this.scene.add(fillLight)
     this.lights.push(fillLight)
 
-    const rimLight = new THREE.PointLight(0x00ff88, 1, 20)
-    rimLight.position.set(5, 3, -5)
+    const rimLight = new THREE.PointLight(0x00ff88, 1.5, 25)
+    rimLight.position.set(5, 4, -5)
     this.scene.add(rimLight)
     this.lights.push(rimLight)
+
+    const topLight = new THREE.PointLight(0x6644ff, 2, 35)
+    topLight.position.set(0, 15, 0)
+    this.scene.add(topLight)
+    this.lights.push(topLight)
 
     // Post-processing
     this.composer = new EffectComposer(this.renderer)
     this.composer.addPass(new RenderPass(this.scene, this.camera))
     const bloom = new BloomEffect({
-      intensity: 1.8,
-      luminanceThreshold: 0.15,
-      luminanceSmoothing: 0.9,
+      intensity: 2.2,
+      luminanceThreshold: 0.1,
+      luminanceSmoothing: 0.8,
       mipmapBlur: true
     })
     this.composer.addPass(new EffectPass(this.camera, bloom))
@@ -141,21 +147,69 @@ export class GameScene {
   }
 
   _createPlayer() {
-    const geo = new THREE.SphereGeometry(0.28, 16, 16)
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      emissive: 0x00aaff,
-      emissiveIntensity: 2.0,
-      roughness: 0.1,
-      metalness: 0.8
-    })
-    this.playerMesh = new THREE.Mesh(geo, mat)
-    this.playerMesh.castShadow = true
+    // Player group — this is the object we move
+    this.playerMesh = new THREE.Group()
     this.playerMesh.position.set(0, 0.35, 0)
     this.scene.add(this.playerMesh)
 
+    // Gem body — icosahedron for faceted look
+    const bodyGeo = new THREE.IcosahedronGeometry(0.26, 1)
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: 0x00aaff,
+      emissiveIntensity: 2.5,
+      roughness: 0.05,
+      metalness: 0.95
+    })
+    this._playerBody = new THREE.Mesh(bodyGeo, bodyMat)
+    this._playerBody.castShadow = true
+    this.playerMesh.add(this._playerBody)
+
+    // Inner glow core
+    const coreGeo = new THREE.SphereGeometry(0.14, 8, 8)
+    const coreMat = new THREE.MeshStandardMaterial({
+      color: 0x88ddff,
+      emissive: 0x00ccff,
+      emissiveIntensity: 4.0,
+      roughness: 0.0,
+      metalness: 0.0,
+      transparent: true,
+      opacity: 0.7
+    })
+    this._playerCore = new THREE.Mesh(coreGeo, coreMat)
+    this.playerMesh.add(this._playerCore)
+
+    // Orbital ring
+    const ringGeo = new THREE.TorusGeometry(0.4, 0.025, 8, 40)
+    const ringMat = new THREE.MeshStandardMaterial({
+      color: 0x00ffff,
+      emissive: 0x00aaff,
+      emissiveIntensity: 3.5,
+      roughness: 0.1,
+      metalness: 0.8
+    })
+    this._playerRing = new THREE.Mesh(ringGeo, ringMat)
+    this._playerRing.rotation.x = Math.PI / 3
+    this.playerMesh.add(this._playerRing)
+
+    // Second thinner ring at different angle
+    const ring2Geo = new THREE.TorusGeometry(0.34, 0.015, 8, 32)
+    const ring2Mat = new THREE.MeshStandardMaterial({
+      color: 0x8866ff,
+      emissive: 0x4422ff,
+      emissiveIntensity: 2.5,
+      roughness: 0.1,
+      metalness: 0.9,
+      transparent: true,
+      opacity: 0.8
+    })
+    this._playerRing2 = new THREE.Mesh(ring2Geo, ring2Mat)
+    this._playerRing2.rotation.x = -Math.PI / 5
+    this._playerRing2.rotation.y = Math.PI / 4
+    this.playerMesh.add(this._playerRing2)
+
     // Player glow light
-    const glow = new THREE.PointLight(0x00aaff, 1.5, 3)
+    const glow = new THREE.PointLight(0x00aaff, 2.0, 4)
     glow.position.set(0, 0, 0)
     this.playerMesh.add(glow)
     this._playerGlow = glow
@@ -169,13 +223,13 @@ export class GameScene {
     const wp = this.gridSystem.worldPos(levelData.playerStart.x, levelData.playerStart.y)
     this.playerMesh.position.set(wp.x, 0.35, wp.z)
 
-    // Adjust camera for grid size
+    // Adjust camera for grid size — top-down perspective
     const grid = levelData.grid
     const cols = grid[0].length
     const rows = grid.length
     const maxDim = Math.max(cols, rows)
     const dist = maxDim * 1.1
-    this.camera.position.set(dist, dist * 1.3, dist)
+    this.camera.position.set(dist * 0.35, dist * 2.2, dist * 0.65)
     this.camera.lookAt(0, 0, 0)
   }
 
@@ -242,13 +296,13 @@ export class GameScene {
       elapsed += delta
       const t = Math.min(elapsed / duration, 1)
       this.playerMesh.position.y = startY - t * 0.8
-      this.playerMesh.material.opacity = 1 - t
-      this.playerMesh.material.transparent = true
+      this._playerBody.material.opacity = 1 - t
+      this._playerBody.material.transparent = true
 
       if (t >= 1) {
         this._deathAnim = null
-        this.playerMesh.material.opacity = 1
-        this.playerMesh.material.transparent = false
+        this._playerBody.material.opacity = 1
+        this._playerBody.material.transparent = false
         onComplete && onComplete()
       }
     }
@@ -288,11 +342,13 @@ export class GameScene {
 
   teleportPlayer(fromPos, toPos, onComplete) {
     // Flash effect
-    this.playerMesh.material.emissiveIntensity = 5.0
+    this._playerBody.material.emissiveIntensity = 6.0
+    this._playerCore.material.emissiveIntensity = 8.0
     setTimeout(() => {
       const wp = this.gridSystem.worldPos(toPos.x, toPos.y)
       this.playerMesh.position.set(wp.x, 0.35, wp.z)
-      this.playerMesh.material.emissiveIntensity = 2.0
+      this._playerBody.material.emissiveIntensity = 2.5
+      this._playerCore.material.emissiveIntensity = 4.0
       onComplete && onComplete()
     }, 150)
   }
@@ -316,10 +372,24 @@ export class GameScene {
       this._goalAnim(delta)
     }
 
-    // Player float
+    // Player float and ring rotation
     if (this.playerMesh && !this.isAnimating && !this._deathAnim) {
-      this.playerMesh.position.y = 0.35 + Math.sin(this.time * 3) * 0.04
-      this.playerMesh.rotation.y = this.time * 1.5
+      this.playerMesh.position.y = 0.35 + Math.sin(this.time * 3) * 0.05
+    }
+    if (this._playerBody) {
+      this._playerBody.rotation.y = this.time * 1.2
+      this._playerBody.rotation.x = Math.sin(this.time * 0.7) * 0.2
+    }
+    if (this._playerRing) {
+      this._playerRing.rotation.z = this.time * 2.0
+    }
+    if (this._playerRing2) {
+      this._playerRing2.rotation.z = -this.time * 1.5
+      this._playerRing2.rotation.x = -Math.PI / 5 + Math.sin(this.time * 0.8) * 0.1
+    }
+    // Pulse player glow
+    if (this._playerGlow) {
+      this._playerGlow.intensity = 1.8 + Math.sin(this.time * 4) * 0.4
     }
 
     // Star field slow rotation
