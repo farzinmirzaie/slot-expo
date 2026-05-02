@@ -3,6 +3,87 @@ import { EffectComposer, RenderPass, BloomEffect, EffectPass } from 'postprocess
 import { GridSystem } from '../systems/GridSystem.js'
 import { ParticleSystem } from '../systems/ParticleSystem.js'
 
+// Per-chapter visual theme definitions
+const CHAPTER_THEMES = {
+  moon: {
+    background: 0x000812,
+    fog: 0x000812, fogDensity: 0.04,
+    ambient: 0x061822, ambientIntensity: 3.0,
+    dirColor: 0xaaccdd, dirIntensity: 4.0,
+    fill1Color: 0x001133, fill1Intensity: 2.5,
+    fill2Color: 0x00ffcc, fill2Intensity: 1.5,
+    topColor: 0x004466, topIntensity: 1.5,
+    playerGlow: 0x00aaff, playerEmissive: 0x00aaff,
+    bloomIntensity: 2.2
+  },
+  ice: {
+    background: 0x000e1f,
+    fog: 0x000e1f, fogDensity: 0.03,
+    ambient: 0x0a1e35, ambientIntensity: 3.5,
+    dirColor: 0xccddff, dirIntensity: 5.0,
+    fill1Color: 0x002255, fill1Intensity: 3.0,
+    fill2Color: 0x88ccff, fill2Intensity: 2.0,
+    topColor: 0x003388, topIntensity: 2.0,
+    playerGlow: 0x44aaff, playerEmissive: 0x2288ff,
+    bloomIntensity: 2.8
+  },
+  desert: {
+    background: 0x1a0800,
+    fog: 0x180600, fogDensity: 0.035,
+    ambient: 0x2a1005, ambientIntensity: 3.0,
+    dirColor: 0xffcc66, dirIntensity: 5.5,
+    fill1Color: 0x441100, fill1Intensity: 2.0,
+    fill2Color: 0xff6600, fill2Intensity: 1.5,
+    topColor: 0x662200, topIntensity: 2.0,
+    playerGlow: 0xff8800, playerEmissive: 0xff6600,
+    bloomIntensity: 1.8
+  },
+  jungle: {
+    background: 0x010e04,
+    fog: 0x010e04, fogDensity: 0.055,
+    ambient: 0x051a09, ambientIntensity: 2.5,
+    dirColor: 0x88ddaa, dirIntensity: 3.5,
+    fill1Color: 0x002200, fill1Intensity: 2.0,
+    fill2Color: 0x00ff44, fill2Intensity: 2.5,
+    topColor: 0x004422, topIntensity: 2.0,
+    playerGlow: 0x00cc44, playerEmissive: 0x00aa33,
+    bloomIntensity: 2.5
+  },
+  volcanic: {
+    background: 0x0d0200,
+    fog: 0x0d0200, fogDensity: 0.05,
+    ambient: 0x1a0500, ambientIntensity: 2.0,
+    dirColor: 0xff4400, dirIntensity: 4.0,
+    fill1Color: 0x440000, fill1Intensity: 3.0,
+    fill2Color: 0xff2200, fill2Intensity: 2.5,
+    topColor: 0x661100, topIntensity: 2.5,
+    playerGlow: 0xff4400, playerEmissive: 0xff3300,
+    bloomIntensity: 3.0
+  },
+  alien: {
+    background: 0x000d14,
+    fog: 0x000d14, fogDensity: 0.03,
+    ambient: 0x061218, ambientIntensity: 3.0,
+    dirColor: 0x88ffcc, dirIntensity: 4.0,
+    fill1Color: 0x003322, fill1Intensity: 2.5,
+    fill2Color: 0x00ff88, fill2Intensity: 2.0,
+    topColor: 0x004433, topIntensity: 2.0,
+    playerGlow: 0x00ffcc, playerEmissive: 0x00ffaa,
+    bloomIntensity: 2.4
+  },
+  station: {
+    background: 0x000008,
+    fog: 0x000008, fogDensity: 0.02,
+    ambient: 0x0d1020, ambientIntensity: 4.0,
+    dirColor: 0xffffff, dirIntensity: 5.0,
+    fill1Color: 0x001166, fill1Intensity: 2.5,
+    fill2Color: 0x4488ff, fill2Intensity: 2.0,
+    topColor: 0x2244aa, topIntensity: 2.0,
+    playerGlow: 0x8888ff, playerEmissive: 0x6666ff,
+    bloomIntensity: 2.0
+  }
+}
+
 export class GameScene {
   constructor() {
     this.renderer = null
@@ -13,12 +94,14 @@ export class GameScene {
     this.particleSystem = new ParticleSystem()
     this.playerMesh = null
     this.starField = null
-    this.lights = []
+    this.lights = {}
     this.time = 0
     this.isAnimating = false
     this._animQueue = []
     this._onAnimDone = null
     this.levelData = null
+    this._bloomEffect = null
+    this._currentTheme = null
   }
 
   init(container) {
@@ -45,10 +128,10 @@ export class GameScene {
     this.camera.position.set(3, 14, 5)
     this.camera.lookAt(0, 0, 0)
 
-    // Lights
+    // Named lights for runtime theming
     const ambient = new THREE.AmbientLight(0x0a1628, 3.0)
     this.scene.add(ambient)
-    this.lights.push(ambient)
+    this.lights.ambient = ambient
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 4)
     dirLight.position.set(3, 12, 5)
@@ -63,33 +146,33 @@ export class GameScene {
     dirLight.shadow.camera.bottom = -12
     dirLight.shadow.bias = -0.001
     this.scene.add(dirLight)
-    this.lights.push(dirLight)
+    this.lights.dir = dirLight
 
     const fillLight = new THREE.PointLight(0x0044ff, 3, 40)
     fillLight.position.set(-5, 8, -5)
     this.scene.add(fillLight)
-    this.lights.push(fillLight)
+    this.lights.fill = fillLight
 
     const rimLight = new THREE.PointLight(0x00ff88, 1.5, 25)
     rimLight.position.set(5, 4, -5)
     this.scene.add(rimLight)
-    this.lights.push(rimLight)
+    this.lights.rim = rimLight
 
     const topLight = new THREE.PointLight(0x6644ff, 2, 35)
     topLight.position.set(0, 15, 0)
     this.scene.add(topLight)
-    this.lights.push(topLight)
+    this.lights.top = topLight
 
     // Post-processing
     this.composer = new EffectComposer(this.renderer)
     this.composer.addPass(new RenderPass(this.scene, this.camera))
-    const bloom = new BloomEffect({
+    this._bloomEffect = new BloomEffect({
       intensity: 2.2,
       luminanceThreshold: 0.1,
       luminanceSmoothing: 0.8,
       mipmapBlur: true
     })
-    this.composer.addPass(new EffectPass(this.camera, bloom))
+    this.composer.addPass(new EffectPass(this.camera, this._bloomEffect))
 
     // Star field
     this._createStarField()
@@ -97,7 +180,7 @@ export class GameScene {
     // Systems
     this.particleSystem.init(this.scene)
 
-    // Player mesh
+    // Player mesh (astronaut)
     this._createPlayer()
 
     window.addEventListener('resize', this._onResize.bind(this))
@@ -147,66 +230,92 @@ export class GameScene {
   }
 
   _createPlayer() {
-    // Player group — this is the object we move
+    // Astronaut capsule group
     this.playerMesh = new THREE.Group()
-    this.playerMesh.position.set(0, 0.35, 0)
+    this.playerMesh.position.set(0, 0.4, 0)
     this.scene.add(this.playerMesh)
 
-    // Gem body — icosahedron for faceted look
-    const bodyGeo = new THREE.IcosahedronGeometry(0.26, 1)
+    // Space suit body — rounded capsule shape
+    const bodyGeo = new THREE.CapsuleGeometry(0.22, 0.18, 8, 16)
     const bodyMat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      emissive: 0x00aaff,
-      emissiveIntensity: 2.5,
-      roughness: 0.05,
-      metalness: 0.95
+      color: 0xdce8f0,
+      emissive: 0x002244,
+      emissiveIntensity: 0.4,
+      roughness: 0.25,
+      metalness: 0.5
     })
     this._playerBody = new THREE.Mesh(bodyGeo, bodyMat)
     this._playerBody.castShadow = true
+    this._playerBody.rotation.x = Math.PI / 2
     this.playerMesh.add(this._playerBody)
 
-    // Inner glow core
-    const coreGeo = new THREE.SphereGeometry(0.14, 8, 8)
-    const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x88ddff,
-      emissive: 0x00ccff,
-      emissiveIntensity: 4.0,
+    // Helmet visor — dark reflective dome on top
+    const visorGeo = new THREE.SphereGeometry(0.17, 12, 8)
+    const visorMat = new THREE.MeshStandardMaterial({
+      color: 0x001122,
+      emissive: 0x0066ff,
+      emissiveIntensity: 2.5,
       roughness: 0.0,
-      metalness: 0.0,
+      metalness: 1.0,
       transparent: true,
-      opacity: 0.7
+      opacity: 0.88
     })
-    this._playerCore = new THREE.Mesh(coreGeo, coreMat)
-    this.playerMesh.add(this._playerCore)
+    this._visor = new THREE.Mesh(visorGeo, visorMat)
+    this._visor.position.set(0, 0.16, 0)
+    this._visor.scale.set(1, 0.65, 1)
+    this.playerMesh.add(this._visor)
 
-    // Orbital ring
-    const ringGeo = new THREE.TorusGeometry(0.4, 0.025, 8, 40)
-    const ringMat = new THREE.MeshStandardMaterial({
-      color: 0x00ffff,
+    // Life support pack (small box on back)
+    const packGeo = new THREE.BoxGeometry(0.18, 0.18, 0.08)
+    const packMat = new THREE.MeshStandardMaterial({
+      color: 0xaabbcc,
+      emissive: 0x001122,
+      emissiveIntensity: 0.3,
+      roughness: 0.6,
+      metalness: 0.6
+    })
+    this._lifePack = new THREE.Mesh(packGeo, packMat)
+    this._lifePack.position.set(0, 0.05, -0.24)
+    this.playerMesh.add(this._lifePack)
+
+    // Thruster nozzle left
+    const thrGeo = new THREE.CylinderGeometry(0.04, 0.06, 0.1, 6)
+    const thrMat = new THREE.MeshStandardMaterial({
+      color: 0x334455,
       emissive: 0x00aaff,
-      emissiveIntensity: 3.5,
-      roughness: 0.1,
+      emissiveIntensity: 1.5,
+      roughness: 0.3,
       metalness: 0.8
     })
-    this._playerRing = new THREE.Mesh(ringGeo, ringMat)
-    this._playerRing.rotation.x = Math.PI / 3
-    this.playerMesh.add(this._playerRing)
+    this._thrL = new THREE.Mesh(thrGeo, thrMat)
+    this._thrL.position.set(-0.22, -0.1, 0)
+    this._thrL.rotation.z = Math.PI / 2
+    this.playerMesh.add(this._thrL)
 
-    // Second thinner ring at different angle
-    const ring2Geo = new THREE.TorusGeometry(0.34, 0.015, 8, 32)
-    const ring2Mat = new THREE.MeshStandardMaterial({
-      color: 0x8866ff,
-      emissive: 0x4422ff,
-      emissiveIntensity: 2.5,
-      roughness: 0.1,
-      metalness: 0.9,
+    // Thruster nozzle right
+    this._thrR = new THREE.Mesh(thrGeo.clone(), thrMat.clone())
+    this._thrR.position.set(0.22, -0.1, 0)
+    this._thrR.rotation.z = -Math.PI / 2
+    this.playerMesh.add(this._thrR)
+
+    // Thruster exhaust glow particles (inner glow discs)
+    const exhaustGeo = new THREE.CircleGeometry(0.04, 8)
+    const exhaustMat = new THREE.MeshStandardMaterial({
+      color: 0x00ccff,
+      emissive: 0x00aaff,
+      emissiveIntensity: 4.0,
       transparent: true,
       opacity: 0.8
     })
-    this._playerRing2 = new THREE.Mesh(ring2Geo, ring2Mat)
-    this._playerRing2.rotation.x = -Math.PI / 5
-    this._playerRing2.rotation.y = Math.PI / 4
-    this.playerMesh.add(this._playerRing2)
+    this._exhaustL = new THREE.Mesh(exhaustGeo, exhaustMat)
+    this._exhaustL.position.set(-0.28, -0.1, 0)
+    this._exhaustL.rotation.y = Math.PI / 2
+    this.playerMesh.add(this._exhaustL)
+
+    this._exhaustR = new THREE.Mesh(exhaustGeo.clone(), exhaustMat.clone())
+    this._exhaustR.position.set(0.28, -0.1, 0)
+    this._exhaustR.rotation.y = -Math.PI / 2
+    this.playerMesh.add(this._exhaustR)
 
     // Player glow light
     const glow = new THREE.PointLight(0x00aaff, 2.0, 4)
@@ -215,21 +324,79 @@ export class GameScene {
     this._playerGlow = glow
   }
 
+  _applyChapterTheme(chapter) {
+    const theme = CHAPTER_THEMES[chapter] || CHAPTER_THEMES.moon
+    this._currentTheme = theme
+
+    // Background & fog
+    this.scene.background.setHex(theme.background)
+    this.scene.fog.color.setHex(theme.fog)
+    this.scene.fog.density = theme.fogDensity
+
+    // Lights
+    this.lights.ambient.color.setHex(theme.ambient)
+    this.lights.ambient.intensity = theme.ambientIntensity
+    this.lights.dir.color.setHex(theme.dirColor)
+    this.lights.dir.intensity = theme.dirIntensity
+    this.lights.fill.color.setHex(theme.fill1Color)
+    this.lights.fill.intensity = theme.fill1Intensity
+    this.lights.rim.color.setHex(theme.fill2Color)
+    this.lights.rim.intensity = theme.fill2Intensity
+    this.lights.top.color.setHex(theme.topColor)
+    this.lights.top.intensity = theme.topIntensity
+
+    // Bloom
+    if (this._bloomEffect) {
+      this._bloomEffect.intensity = theme.bloomIntensity
+    }
+
+    // Player visor & glow per chapter
+    if (this._visor) {
+      this._visor.material.emissive.setHex(theme.playerEmissive)
+    }
+    if (this._playerGlow) {
+      this._playerGlow.color.setHex(theme.playerGlow)
+    }
+    if (this._thrL && this._thrR) {
+      this._thrL.material.emissive.setHex(theme.playerGlow)
+      this._thrR.material.emissive.setHex(theme.playerGlow)
+    }
+    if (this._exhaustL && this._exhaustR) {
+      this._exhaustL.material.color.setHex(theme.playerGlow)
+      this._exhaustL.material.emissive.setHex(theme.playerGlow)
+      this._exhaustR.material.color.setHex(theme.playerGlow)
+      this._exhaustR.material.emissive.setHex(theme.playerGlow)
+    }
+
+    // Star field color tint
+    if (this.starField) {
+      const c = new THREE.Color(theme.fill2Color)
+      this.starField.material.color.setRGB(
+        0.7 + c.r * 0.3,
+        0.7 + c.g * 0.3,
+        0.7 + c.b * 0.3
+      )
+    }
+  }
+
   loadLevel(levelData) {
     this.levelData = levelData
+    this._applyChapterTheme(levelData.chapter || 'moon')
     this.gridSystem.init(this.scene, levelData)
 
     // Position player
     const wp = this.gridSystem.worldPos(levelData.playerStart.x, levelData.playerStart.y)
-    this.playerMesh.position.set(wp.x, 0.35, wp.z)
+    this.playerMesh.position.set(wp.x, 0.4, wp.z)
 
-    // Adjust camera for grid size — top-down perspective
+    // Adjust camera for grid size and screen orientation
     const grid = levelData.grid
     const cols = grid[0].length
     const rows = grid.length
     const maxDim = Math.max(cols, rows)
+    const isPortrait = window.innerHeight > window.innerWidth
+    const distMult = isPortrait ? 2.8 : 2.2
     const dist = maxDim * 1.1
-    this.camera.position.set(dist * 0.35, dist * 2.2, dist * 0.65)
+    this.camera.position.set(dist * 0.35, dist * distMult, dist * 0.65)
     this.camera.lookAt(0, 0, 0)
   }
 
@@ -238,7 +405,7 @@ export class GameScene {
 
     const worldPositions = path.map(p => ({
       wx: this.gridSystem.worldPos(p.x, p.y).x,
-      wy: 0.35,
+      wy: 0.4,
       wz: this.gridSystem.worldPos(p.x, p.y).z,
       gx: p.x,
       gy: p.y
@@ -285,7 +452,7 @@ export class GameScene {
 
   craterFall(position, onComplete) {
     const wp = this.gridSystem.worldPos(position.x, position.y)
-    this.particleSystem.craterDeath(new THREE.Vector3(wp.x, 0.35, wp.z))
+    this.particleSystem.craterDeath(new THREE.Vector3(wp.x, 0.4, wp.z))
 
     // Animate player falling
     const startY = this.playerMesh.position.y
@@ -342,20 +509,22 @@ export class GameScene {
 
   teleportPlayer(fromPos, toPos, onComplete) {
     // Flash effect
-    this._playerBody.material.emissiveIntensity = 6.0
-    this._playerCore.material.emissiveIntensity = 8.0
+    if (this._visor) {
+      this._visor.material.emissiveIntensity = 8.0
+    }
     setTimeout(() => {
       const wp = this.gridSystem.worldPos(toPos.x, toPos.y)
-      this.playerMesh.position.set(wp.x, 0.35, wp.z)
-      this._playerBody.material.emissiveIntensity = 2.5
-      this._playerCore.material.emissiveIntensity = 4.0
+      this.playerMesh.position.set(wp.x, 0.4, wp.z)
+      if (this._visor && this._currentTheme) {
+        this._visor.material.emissiveIntensity = 2.5
+      }
       onComplete && onComplete()
     }, 150)
   }
 
   setPlayerPosition(gx, gy) {
     const wp = this.gridSystem.worldPos(gx, gy)
-    this.playerMesh.position.set(wp.x, 0.35, wp.z)
+    this.playerMesh.position.set(wp.x, 0.4, wp.z)
   }
 
   update(delta) {
@@ -372,24 +541,31 @@ export class GameScene {
       this._goalAnim(delta)
     }
 
-    // Player float and ring rotation
+    // Astronaut idle animations — gentle float and sway
     if (this.playerMesh && !this.isAnimating && !this._deathAnim) {
-      this.playerMesh.position.y = 0.35 + Math.sin(this.time * 3) * 0.05
+      this.playerMesh.position.y = 0.4 + Math.sin(this.time * 2.5) * 0.04
+      // Slight sway side to side
+      this.playerMesh.rotation.z = Math.sin(this.time * 1.8) * 0.06
+      this.playerMesh.rotation.x = Math.sin(this.time * 1.2) * 0.04
     }
-    if (this._playerBody) {
-      this._playerBody.rotation.y = this.time * 1.2
-      this._playerBody.rotation.x = Math.sin(this.time * 0.7) * 0.2
+
+    // Visor glow pulse
+    if (this._visor) {
+      this._visor.material.emissiveIntensity = 2.0 + Math.sin(this.time * 3.5) * 0.5
     }
-    if (this._playerRing) {
-      this._playerRing.rotation.z = this.time * 2.0
+
+    // Thruster exhaust flicker
+    if (this._exhaustL && this._exhaustR) {
+      const flicker = 3.5 + Math.sin(this.time * 12) * 1.5
+      this._exhaustL.material.emissiveIntensity = flicker
+      this._exhaustR.material.emissiveIntensity = flicker
+      this._exhaustL.material.opacity = 0.6 + Math.sin(this.time * 15) * 0.2
+      this._exhaustR.material.opacity = 0.6 + Math.sin(this.time * 13) * 0.2
     }
-    if (this._playerRing2) {
-      this._playerRing2.rotation.z = -this.time * 1.5
-      this._playerRing2.rotation.x = -Math.PI / 5 + Math.sin(this.time * 0.8) * 0.1
-    }
+
     // Pulse player glow
     if (this._playerGlow) {
-      this._playerGlow.intensity = 1.8 + Math.sin(this.time * 4) * 0.4
+      this._playerGlow.intensity = 1.8 + Math.sin(this.time * 4) * 0.5
     }
 
     // Star field slow rotation
@@ -413,6 +589,19 @@ export class GameScene {
     this.camera.updateProjectionMatrix()
     this.renderer.setSize(w, h)
     this.composer.setSize(w, h)
+
+    // Recompute camera for portrait/landscape
+    if (this.levelData) {
+      const grid = this.levelData.grid
+      const cols = grid[0].length
+      const rows = grid.length
+      const maxDim = Math.max(cols, rows)
+      const isPortrait = h > w
+      const distMult = isPortrait ? 2.8 : 2.2
+      const dist = maxDim * 1.1
+      this.camera.position.set(dist * 0.35, dist * distMult, dist * 0.65)
+      this.camera.lookAt(0, 0, 0)
+    }
   }
 
   dispose() {

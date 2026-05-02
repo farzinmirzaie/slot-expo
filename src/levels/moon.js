@@ -13,7 +13,7 @@ export const moonLevels = [
     id: 1,
     name: 'First Steps',
     chapter: 'moon',
-    narrative: 'You crash-landed on the Moon. Low gravity lets you glide across the surface — slide right to the beacon.',
+    narrative: '"..." System rebooting.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -35,7 +35,7 @@ export const moonLevels = [
     id: 2,
     name: 'Corner Shot',
     chapter: 'moon',
-    narrative: 'The boulders channel you — slide right then turn upward.',
+    narrative: '"System rebooting…" Where am I?',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -57,7 +57,7 @@ export const moonLevels = [
     id: 3,
     name: 'Detour',
     chapter: 'moon',
-    narrative: 'A boulder blocks the direct path. Find a way around.',
+    narrative: '"Where am I?" Navigation offline.',
     grid: [
       [0,0,0,0,1,0,0],  // blocker at (4,0)
       [0,0,0,0,0,0,0],
@@ -80,7 +80,7 @@ export const moonLevels = [
     id: 4,
     name: 'Crater Lesson',
     chapter: 'moon',
-    narrative: 'Ancient craters dot the surface. Fall in and it\'s over — detour around the danger zone.',
+    narrative: '"Mobility restored." Navigation offline.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -103,7 +103,7 @@ export const moonLevels = [
     id: 5,
     name: 'Signal Cache',
     chapter: 'moon',
-    narrative: 'A distress beacon fragment lies in the crater field. Collect it before reaching the rescue pod.',
+    narrative: '"Navigation offline." Signal detected.',
     grid: [
       [0,0,0,0,1,0,0],  // blocker at (4,0)
       [0,0,0,0,0,0,0],
@@ -131,7 +131,7 @@ export const moonLevels = [
     id: 6,
     name: 'Double Drop',
     chapter: 'moon',
-    narrative: 'Two caches, two corners. Collect both before escaping.',
+    narrative: '"Signal detected… weak." Source unknown.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -157,7 +157,7 @@ export const moonLevels = [
     id: 7,
     name: 'Twin Peaks',
     chapter: 'moon',
-    narrative: 'The twin craters funnel every path. Navigate with care.',
+    narrative: '"Signal detected…" Collecting components.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -185,7 +185,7 @@ export const moonLevels = [
     id: 8,
     name: 'Crater Cross',
     chapter: 'moon',
-    narrative: 'One crater in column 0 seals the shortcut. Think around it.',
+    narrative: '"Collecting components…" Partial recovery.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -213,7 +213,7 @@ export const moonLevels = [
     id: 9,
     name: 'Four Corners',
     chapter: 'moon',
-    narrative: 'Supply caches at opposite corners. Collect both — then escape.',
+    narrative: '"Partial system recovery." Signal locked.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -239,7 +239,7 @@ export const moonLevels = [
     id: 10,
     name: "Moon's Final Trial",
     chapter: 'moon',
-    narrative: 'The hardest terrain the Moon has to offer. Use everything you have learned.',
+    narrative: '"Navigation partially restored." Signal locked.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],

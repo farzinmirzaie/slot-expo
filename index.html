@@ -3,18 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>GLIDE — Puzzle Game</title>
+  <title>GLIDE — Signal Unknown</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #000010;
+      background: #000008;
       overflow: hidden;
       font-family: 'Orbitron', 'Courier New', monospace;
       width: 100vw;
       height: 100vh;
+      /* Prevent text selection on mobile */
+      -webkit-user-select: none;
+      user-select: none;
+      /* Fix iOS height */
+      height: -webkit-fill-available;
     }
     #canvas-container {
       position: fixed;
@@ -40,7 +45,8 @@
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      background: radial-gradient(ellipse at center, #000830 0%, #000010 70%);
+      height: -webkit-fill-available;
+      background: radial-gradient(ellipse at center, #000820 0%, #000008 70%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -135,11 +141,11 @@
   <div id="ui-overlay"></div>
   <div id="loading-screen">
     <div id="loading-title">GLIDE</div>
-    <div id="loading-subtitle">A Neon Puzzle Adventure</div>
+    <div id="loading-subtitle">Signal Unknown · Origin Unknown</div>
     <div id="loading-bar-container">
       <div id="loading-bar"></div>
     </div>
-    <div id="loading-text">INITIALIZING<span id="loading-dots">...</span></div>
+    <div id="loading-text">SYSTEM REBOOTING<span id="loading-dots">...</span></div>
   </div>
   <script type="module" src="./src/main.js"></script>
 </body>

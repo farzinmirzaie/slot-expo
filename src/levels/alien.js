@@ -19,7 +19,7 @@ export const alienLevels = [
     id: 1,
     name: 'First Contact',
     chapter: 'alien',
-    narrative: 'An alien portal shimmers before you. Step through — and arrive somewhere else entirely.',
+    narrative: '"Structures detected…" Artificial.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -44,7 +44,7 @@ export const alienLevels = [
     id: 2,
     name: 'Portal Hop',
     chapter: 'alien',
-    narrative: 'Two portals. The path is indirect — trust the technology.',
+    narrative: '"Signal embedded in system…" Not natural.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -71,7 +71,7 @@ export const alienLevels = [
     id: 3,
     name: 'Warp Maze',
     chapter: 'alien',
-    narrative: 'Multiple portals litter the maze. Not every warp helps — choose the right one.',
+    narrative: '"Signal is being generated…" Not received.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,1,0,0,0,1,0],
@@ -106,7 +106,7 @@ export const alienLevels = [
     id: 4,
     name: 'Quantum Leap',
     chapter: 'alien',
-    narrative: 'The teleport chains extend. Plan multiple hops ahead.',
+    narrative: '"This is not a distress signal." It is a beacon.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -133,7 +133,7 @@ export const alienLevels = [
     id: 5,
     name: 'Phase Shift',
     chapter: 'alien',
-    narrative: 'Phase through the wall — emerge somewhere unexpected.',
+    narrative: '"Signal source identified." Coordinates locked.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,0,1,0,0,1,0,0],  // blockers at (2,1) and (5,1)
@@ -161,7 +161,7 @@ export const alienLevels = [
     id: 6,
     name: 'Alien Labyrinth',
     chapter: 'alien',
-    narrative: 'The alien city is a maze of portals and barriers. Find the route to the command center.',
+    narrative: '"Signal source identified." Not a distress call.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,1,0,5,0,0,1,0],  // blocker(1,1), TP at (3,1), blocker(6,1)
@@ -198,7 +198,7 @@ export const alienLevels = [
     id: 7,
     name: 'Wormhole',
     chapter: 'alien',
-    narrative: 'A wormhole crosses the galaxy. Use it — or be destroyed by what guards the direct route.',
+    narrative: '"This is not a distress signal." It is a beacon.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0],
@@ -244,7 +244,7 @@ export const alienLevels = [
     id: 8,
     name: 'Singularity',
     chapter: 'alien',
-    narrative: 'The final alien challenge. Every skill. Every mechanic. One escape.',
+    narrative: '"Signal source identified." Coordinates locked.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,3,0,0,0,0,3,0],  // sand at (1,1) and (6,1)

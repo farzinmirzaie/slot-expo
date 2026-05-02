@@ -34,14 +34,15 @@ export class MainMenu {
           <span class="title-letter" style="--d:3">D</span>
           <span class="title-letter" style="--d:4">E</span>
         </div>
-        <div class="menu-subtitle">A NEON PUZZLE ADVENTURE</div>
+        <div class="menu-subtitle">SIGNAL UNKNOWN · ORIGIN UNKNOWN</div>
+        <div class="menu-narrative">"System rebooting…"<br>You are not where you should be.</div>
         <div class="menu-buttons">
-          <button class="menu-btn primary" id="menu-start">START GAME</button>
+          <button class="menu-btn primary" id="menu-start">FOLLOW THE SIGNAL</button>
           <button class="menu-btn" id="menu-levels">CHAPTER SELECT</button>
           <button class="menu-btn danger" id="menu-reset">RESET SAVE</button>
         </div>
         <div class="menu-footer">
-          <span>ARROW KEYS / SWIPE TO MOVE</span>
+          <span>ARROWS / SWIPE TO GLIDE</span>
           <span>Z = UNDO · R = RESTART</span>
         </div>
       </div>
@@ -141,6 +142,17 @@ export class MainMenu {
         color: rgba(0, 255, 200, 0.38);
         margin-top: -1.8rem;
         text-transform: uppercase;
+      }
+      .menu-narrative {
+        font-family: 'Exo 2', sans-serif;
+        font-size: clamp(0.65rem, 1.8vw, 0.82rem);
+        font-weight: 300;
+        letter-spacing: 0.1em;
+        color: rgba(120, 200, 255, 0.55);
+        text-align: center;
+        line-height: 1.7;
+        font-style: italic;
+        max-width: 280px;
       }
       .menu-buttons {
         display: flex;

@@ -1,4 +1,4 @@
-const SAVE_KEY = 'glide_save'
+const SAVE_KEY = 'glide_save_v2'
 
 export class StateManager {
   constructor() {
@@ -9,7 +9,7 @@ export class StateManager {
     this.moveCount = 0
     this.saveData = {
       currentChapter: 'moon',
-      levelsCompleted: { moon: 0, ice: 0, desert: 0, alien: 0 },
+      levelsCompleted: { moon: 0, ice: 0, desert: 0, jungle: 0, volcanic: 0, alien: 0, station: 0 },
       totalMoves: 0,
       stars: {}
     }
@@ -130,7 +130,7 @@ export class StateManager {
   }
 
   isChapterUnlocked(chapter) {
-    const order = ['moon', 'ice', 'desert', 'alien']
+    const order = ['moon', 'ice', 'desert', 'jungle', 'volcanic', 'alien', 'station']
     const idx = order.indexOf(chapter)
     if (idx === 0) return true
     const prev = order[idx - 1]
@@ -156,7 +156,10 @@ export class StateManager {
             moon: parsed.levelsCompleted?.moon || 0,
             ice: parsed.levelsCompleted?.ice || 0,
             desert: parsed.levelsCompleted?.desert || 0,
-            alien: parsed.levelsCompleted?.alien || 0
+            jungle: parsed.levelsCompleted?.jungle || 0,
+            volcanic: parsed.levelsCompleted?.volcanic || 0,
+            alien: parsed.levelsCompleted?.alien || 0,
+            station: parsed.levelsCompleted?.station || 0
           },
           totalMoves: parsed.totalMoves || 0,
           stars: parsed.stars || {}
@@ -170,7 +173,7 @@ export class StateManager {
   resetProgress() {
     this.saveData = {
       currentChapter: 'moon',
-      levelsCompleted: { moon: 0, ice: 0, desert: 0, alien: 0 },
+      levelsCompleted: { moon: 0, ice: 0, desert: 0, jungle: 0, volcanic: 0, alien: 0, station: 0 },
       totalMoves: 0,
       stars: {}
     }
