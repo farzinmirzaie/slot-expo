@@ -113,6 +113,16 @@ export class LevelSelect {
         border-color: rgba(0,255,200,0.45);
         color: rgba(0,255,200,0.75);
       }
+      @media (max-width: 480px) {
+        .chapter-tabs { gap: 0.3rem; }
+        .chapter-tab {
+          padding: 0.4rem 0.65rem;
+          font-size: 0.58rem;
+          letter-spacing: 0.08em;
+        }
+        .levels-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.55rem; }
+        #level-select { padding: 1rem 0.75rem; }
+      }
       .levels-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -186,10 +196,13 @@ export class LevelSelect {
 
   _renderContent() {
     const chapters = [
-      { id: 'moon', label: '🌑 MOON' },
-      { id: 'ice', label: '❄️ ICE' },
-      { id: 'desert', label: '🌵 DESERT' },
-      { id: 'alien', label: '👽 ALIEN' }
+      { id: 'moon',     label: '🌑 UNKNOWN' },
+      { id: 'ice',      label: '❄️ ICE' },
+      { id: 'desert',   label: '🌵 DESERT' },
+      { id: 'jungle',   label: '🌿 JUNGLE' },
+      { id: 'volcanic', label: '🔥 VOLCANO' },
+      { id: 'alien',    label: '👽 ALIEN' },
+      { id: 'station',  label: '🛰️ STATION' }
     ]
 
     const levels = this._allLevels[this._currentChapter] || []

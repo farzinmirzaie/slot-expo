@@ -11,16 +11,22 @@ import { Transitions } from './ui/Transitions.js'
 import { moonLevels } from './levels/moon.js'
 import { iceLevels } from './levels/ice.js'
 import { desertLevels } from './levels/desert.js'
+import { jungleLevels } from './levels/jungle.js'
+import { volcanicLevels } from './levels/volcanic.js'
 import { alienLevels } from './levels/alien.js'
+import { stationLevels } from './levels/station.js'
 
-const CHAPTERS = {
+export const CHAPTERS = {
   moon: moonLevels,
   ice: iceLevels,
   desert: desertLevels,
-  alien: alienLevels
+  jungle: jungleLevels,
+  volcanic: volcanicLevels,
+  alien: alienLevels,
+  station: stationLevels
 }
 
-const CHAPTER_ORDER = ['moon', 'ice', 'desert', 'alien']
+export const CHAPTER_ORDER = ['moon', 'ice', 'desert', 'jungle', 'volcanic', 'alien', 'station']
 
 export class Game {
   constructor() {

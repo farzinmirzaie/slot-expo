@@ -18,7 +18,7 @@ export const iceLevels = [
     id: 1,
     name: 'Black Ice',
     chapter: 'ice',
-    narrative: 'The crystalline surface is almost frictionless. Reach the beacon before you slide off the edge.',
+    narrative: '"Surface unstable…" Movement compromised.',
     grid: [
       [4,4,4,4,4,4,4],
       [4,4,4,4,4,4,4],
@@ -40,7 +40,7 @@ export const iceLevels = [
     id: 2,
     name: 'Sand Grip',
     chapter: 'ice',
-    narrative: 'A frozen river cuts through. Sand patches are your only foothold.',
+    narrative: '"Movement compromised." Adjusting trajectory.',
     grid: [
       [4,4,4,4,4,4,4],
       [4,4,4,4,4,4,4],
@@ -64,7 +64,7 @@ export const iceLevels = [
     id: 3,
     name: 'Frozen River',
     chapter: 'ice',
-    narrative: 'Use the sand patches as stepping stones — one wrong slide and you miss.',
+    narrative: '"Adjusting trajectory…" Signal increasing.',
     grid: [
       [4,4,4,4,4,4,4],
       [4,4,4,4,4,4,4],
@@ -103,7 +103,7 @@ export const iceLevels = [
     id: 4,
     name: 'Ice Patch',
     chapter: 'ice',
-    narrative: 'The ice patches are unpredictable. Plan your route carefully.',
+    narrative: '"Signal strength increasing." Stay on course.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,1,0,0,0,1,0],  // blockers at (1,1) and (5,1)
@@ -129,7 +129,7 @@ export const iceLevels = [
     id: 5,
     name: 'Ice Override',
     chapter: 'ice',
-    narrative: 'A blocker ahead forces you to stop on the goal — ice carries you through the sand.',
+    narrative: '"Signal consistent across surface." Tracking.',
     grid: [
       [4,4,4,4,4,4,4],
       [4,4,4,4,4,4,4],
@@ -153,7 +153,7 @@ export const iceLevels = [
     id: 6,
     name: 'Slalom',
     chapter: 'ice',
-    narrative: 'Weave between the ice corridors to reach the summit.',
+    narrative: '"Tracking…" Keep the beacon in sight.',
     grid: [
       [4,4,4,4,4,4,4],
       [4,1,4,4,4,1,4],  // blockers at (1,1) and (5,1)
@@ -183,7 +183,7 @@ export const iceLevels = [
     id: 7,
     name: 'Crevasse',
     chapter: 'ice',
-    narrative: 'A deep crater splits the ice field. Navigate around the abyss.',
+    narrative: '"Signal consistent across surface." Fragment nearby.',
     grid: [
       [4,4,4,4,4,4,4,4],
       [4,4,4,4,4,4,4,4],
@@ -213,7 +213,7 @@ export const iceLevels = [
     id: 8,
     name: 'Glacier',
     chapter: 'ice',
-    narrative: 'The glacier is vast. The beacon floats somewhere in the middle — collect it before landing.',
+    narrative: '"Recovered navigation fragment." Signal improved.',
     grid: [
       [4,4,4,4,4,4,4,4],
       [4,4,4,4,4,4,4,4],
@@ -239,7 +239,7 @@ export const iceLevels = [
     id: 9,
     name: 'Crystal Maze',
     chapter: 'ice',
-    narrative: 'The crystal formations redirect your path at every turn.',
+    narrative: '"Signal clarity improved." Continue north.',
     grid: [
       [4,4,4,4,4,4,4,4],
       [4,4,4,4,4,4,4,4],
@@ -266,7 +266,7 @@ export const iceLevels = [
     id: 10,
     name: 'Absolute Zero',
     chapter: 'ice',
-    narrative: 'The final challenge of the ice planet — ice, craters, and collectibles all at once.',
+    narrative: '"Recovered navigation fragment." Signal clarity improved.',
     grid: [
       [4,4,4,4,4,4,4,4],
       [4,4,4,4,4,4,4,4],

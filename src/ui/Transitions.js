@@ -195,11 +195,26 @@ export class Transitions {
       }
       .banner-chapter {
         font-family: 'Orbitron', monospace;
-        font-size: clamp(1.8rem, 7vw, 4.5rem);
+        font-size: clamp(1.5rem, 6vw, 4rem);
         font-weight: 900;
-        letter-spacing: 0.3em;
+        letter-spacing: 0.25em;
         color: #00ffcc;
         text-shadow: 0 0 20px #00ffcc, 0 0 55px rgba(0,170,255,0.6), 0 0 100px rgba(0,60,255,0.3);
+      }
+      .banner-subtitle {
+        font-family: 'Exo 2', sans-serif;
+        font-size: clamp(0.7rem, 2vw, 1rem);
+        font-weight: 300;
+        letter-spacing: 0.2em;
+        color: rgba(0, 255, 200, 0.5);
+        margin-top: 0.75rem;
+        font-style: italic;
+      }
+      @media (max-width: 480px) {
+        .lc-content { padding: 2rem 1.75rem; gap: 1.2rem; }
+        .lc-buttons { gap: 0.7rem; }
+        .lc-btn { padding: 0.7rem 1.4rem; font-size: 0.65rem; }
+        .lc-stars { font-size: 2.2rem; }
       }
     `
     document.head.appendChild(style)
@@ -260,18 +275,33 @@ export class Transitions {
   showChapterBanner(chapterName) {
     return new Promise(resolve => {
       const names = {
-        moon: '🌑 MOON',
-        ice: '❄️ ICE PLANET',
-        desert: '🌵 DESERT WORLD',
-        alien: '👽 ALIEN TECH'
+        moon:     '🌑 UNKNOWN PLANET',
+        ice:      '❄️ ICE PLANET',
+        desert:   '🌵 DESERT PLANET',
+        jungle:   '🌿 JUNGLE PLANET',
+        volcanic: '🔥 VOLCANIC PLANET',
+        alien:    '👽 ALIEN TECH',
+        station:  '🛰️ SPACE STATION'
       }
-      this.el.querySelector('#banner-chapter-name').textContent = names[chapterName] || chapterName.toUpperCase()
+      const subtitles = {
+        moon:     'Where am I?',
+        ice:      'Surface unstable…',
+        desert:   'Energy levels dropping…',
+        jungle:   'Environment reacting…',
+        volcanic: 'Hazard levels critical.',
+        alien:    'Structures detected. Artificial.',
+        station:  'Station operational.'
+      }
+      const name = names[chapterName] || chapterName.toUpperCase()
+      const sub = subtitles[chapterName] || ''
+      const bannerEl = this.el.querySelector('#banner-chapter-name')
+      bannerEl.innerHTML = name + '<div class="banner-subtitle">' + sub + '</div>'
       this.chapterBanner.style.display = 'flex'
 
       setTimeout(() => {
         this.chapterBanner.style.display = 'none'
         resolve()
-      }, 2600)
+      }, 2800)
     })
   }
 

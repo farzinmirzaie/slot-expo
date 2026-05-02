@@ -249,6 +249,36 @@ export class HUD {
       @media (min-width: 768px) {
         .hud-dpad { display: none; }
       }
+      /* Always show dpad on touch devices regardless of screen size */
+      @media (hover: none) and (pointer: coarse) {
+        .hud-dpad { display: flex !important; }
+      }
+      /* Portrait mobile adjustments */
+      @media (max-width: 480px) {
+        .hud-top {
+          top: 0.6rem; left: 0.6rem;
+          padding: 0.45rem 0.7rem;
+        }
+        .hud-level-name { font-size: 0.8rem; }
+        .hud-actions { top: 0.6rem; right: 0.6rem; gap: 0.3rem; }
+        .hud-btn { width: 40px; height: 40px; font-size: 0.9rem; }
+        .hud-dpad { bottom: 1rem; right: 1rem; }
+        .dpad-btn { width: 48px; height: 48px; font-size: 1rem; }
+        .dpad-center { width: 48px; height: 48px; }
+        .hud-narrative {
+          bottom: 8.5rem;
+          font-size: 0.68rem;
+          width: min(340px, 90vw);
+        }
+      }
+      /* Landscape mobile adjustments */
+      @media (max-height: 480px) and (orientation: landscape) {
+        .hud-dpad { bottom: 0.5rem; right: 0.5rem; }
+        .dpad-btn { width: 44px; height: 44px; font-size: 0.95rem; }
+        .dpad-center { width: 44px; height: 44px; }
+        .hud-narrative { bottom: 5rem; font-size: 0.65rem; }
+        .hud-top { padding: 0.4rem 0.7rem; }
+      }
     `
     document.head.appendChild(style)
   }
@@ -266,10 +296,13 @@ export class HUD {
   updateLevel(levelData) {
     if (!this.el) return
     const chapterNames = {
-      moon: '🌑 MOON',
-      ice: '❄️ ICE',
-      desert: '🌵 DESERT',
-      alien: '👽 ALIEN'
+      moon:     '🌑 UNKNOWN PLANET',
+      ice:      '❄️ ICE PLANET',
+      desert:   '🌵 DESERT PLANET',
+      jungle:   '🌿 JUNGLE PLANET',
+      volcanic: '🔥 VOLCANIC PLANET',
+      alien:    '👽 ALIEN TECH',
+      station:  '🛰️ SPACE STATION'
     }
     this.el.querySelector('#hud-chapter').textContent = chapterNames[levelData.chapter] || levelData.chapter.toUpperCase()
     this.el.querySelector('#hud-level-name').textContent = levelData.name

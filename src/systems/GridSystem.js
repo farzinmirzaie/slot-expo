@@ -10,6 +10,52 @@ export const TILE_TELEPORT = 5
 const TILE_SIZE = 1
 const TILE_GAP = 0.05
 
+// Per-chapter tile color palettes
+const CHAPTER_PALETTES = {
+  moon: {
+    emptyColor: 0x0d1628, emptyEdge: 0x0a2248, emptyEdgeEmissive: 0x112244,
+    blockerColor: 0x334455, blockerEmissive: 0x112233, blockerCap: 0x6688aa,
+    craterVoid: 0x110022, craterRim: 0xff3300, goalColor: 0x00aa55, goalGlow: 0x00ff88,
+    floorColor: 0x050510, gridLine: 0x112233
+  },
+  ice: {
+    emptyColor: 0x0d1e30, emptyEdge: 0x1a3a5c, emptyEdgeEmissive: 0x1a4466,
+    blockerColor: 0x224488, blockerEmissive: 0x112255, blockerCap: 0x88aadd,
+    craterVoid: 0x001133, craterRim: 0x0066ff, goalColor: 0x00aacc, goalGlow: 0x44ddff,
+    floorColor: 0x040e1a, gridLine: 0x112244
+  },
+  desert: {
+    emptyColor: 0x1a0e00, emptyEdge: 0x3a2200, emptyEdgeEmissive: 0x442200,
+    blockerColor: 0x664422, blockerEmissive: 0x441100, blockerCap: 0xcc8844,
+    craterVoid: 0x220800, craterRim: 0xff6600, goalColor: 0xcc5500, goalGlow: 0xff8800,
+    floorColor: 0x100800, gridLine: 0x221100
+  },
+  jungle: {
+    emptyColor: 0x041208, emptyEdge: 0x0a2a10, emptyEdgeEmissive: 0x0a3315,
+    blockerColor: 0x1a4422, blockerEmissive: 0x0d2211, blockerCap: 0x44aa55,
+    craterVoid: 0x001108, craterRim: 0x00ff44, goalColor: 0x00aa33, goalGlow: 0x00ff55,
+    floorColor: 0x020a04, gridLine: 0x0a2210
+  },
+  volcanic: {
+    emptyColor: 0x140500, emptyEdge: 0x2a0800, emptyEdgeEmissive: 0x440e00,
+    blockerColor: 0x3a1a00, blockerEmissive: 0x220800, blockerCap: 0xaa4400,
+    craterVoid: 0x330500, craterRim: 0xff2200, goalColor: 0xaa2200, goalGlow: 0xff4400,
+    floorColor: 0x0a0300, gridLine: 0x220800
+  },
+  alien: {
+    emptyColor: 0x040d14, emptyEdge: 0x083322, emptyEdgeEmissive: 0x0d3a22,
+    blockerColor: 0x224433, blockerEmissive: 0x112211, blockerCap: 0x44cc88,
+    craterVoid: 0x001122, craterRim: 0x00ff88, goalColor: 0x00aa55, goalGlow: 0x00ffaa,
+    floorColor: 0x020a08, gridLine: 0x0a2218
+  },
+  station: {
+    emptyColor: 0x0d1020, emptyEdge: 0x1a2040, emptyEdgeEmissive: 0x2233aa,
+    blockerColor: 0x334466, blockerEmissive: 0x112244, blockerCap: 0x6688cc,
+    craterVoid: 0x000822, craterRim: 0x4488ff, goalColor: 0x2255aa, goalGlow: 0x4488ff,
+    floorColor: 0x050810, gridLine: 0x111a33
+  }
+}
+
 export class GridSystem {
   constructor() {
     this.scene = null
@@ -19,6 +65,7 @@ export class GridSystem {
     this.collectibleMeshes = []
     this.gridGroup = null
     this.time = 0
+    this.palette = CHAPTER_PALETTES.moon
   }
 
   init(scene, levelData) {
@@ -26,6 +73,7 @@ export class GridSystem {
     this.levelData = levelData
     this.tileMeshes = []
     this.collectibleMeshes = []
+    this.palette = CHAPTER_PALETTES[levelData.chapter] || CHAPTER_PALETTES.moon
 
     if (this.gridGroup) {
       this.scene.remove(this.gridGroup)
@@ -46,7 +94,7 @@ export class GridSystem {
     // Create base floor plane
     const floorGeo = new THREE.PlaneGeometry(cols + 0.5, rows + 0.5)
     const floorMat = new THREE.MeshStandardMaterial({
-      color: 0x050510,
+      color: this.palette.floorColor,
       roughness: 0.9,
       metalness: 0.1
     })
@@ -57,7 +105,7 @@ export class GridSystem {
     this.gridGroup.add(floor)
 
     // Grid lines
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x112233, transparent: true, opacity: 0.4 })
+    const lineMat = new THREE.LineBasicMaterial({ color: this.palette.gridLine, transparent: true, opacity: 0.4 })
     for (let r = 0; r <= rows; r++) {
       const pts = [
         new THREE.Vector3(offsetX - 0.5, 0.01, offsetZ + r - 0.5),
@@ -99,15 +147,16 @@ export class GridSystem {
   _createTile(tileType, x, z, col, row) {
     let geo, mat, mesh
     const s = TILE_SIZE - TILE_GAP
+    const p = this.palette
 
     switch (tileType) {
       case TILE_EMPTY: {
         // Raised platform tile with subtle top face
         geo = new THREE.BoxGeometry(s, 0.12, s)
         mat = new THREE.MeshStandardMaterial({
-          color: 0x0d1628,
-          emissive: 0x0a1020,
-          emissiveIntensity: 0.5,
+          color: p.emptyColor,
+          emissive: p.emptyColor,
+          emissiveIntensity: 0.3,
           roughness: 0.7,
           metalness: 0.4
         })
@@ -116,8 +165,8 @@ export class GridSystem {
         // Top edge glow strip
         const edgeGeo = new THREE.BoxGeometry(s, 0.01, s)
         const edgeMat = new THREE.MeshStandardMaterial({
-          color: 0x1a3a5c,
-          emissive: 0x112244,
+          color: p.emptyEdge,
+          emissive: p.emptyEdgeEmissive,
           emissiveIntensity: 1.0,
           roughness: 0.3,
           metalness: 0.8
@@ -132,7 +181,7 @@ export class GridSystem {
         // Hexagonal crystal pillar
         const baseGeo = new THREE.CylinderGeometry(s * 0.48, s * 0.5, 0.12, 6)
         const baseMat = new THREE.MeshStandardMaterial({
-          color: 0x334455,
+          color: p.blockerColor,
           roughness: 0.6,
           metalness: 0.5
         })
@@ -143,8 +192,8 @@ export class GridSystem {
         // Pillar body
         geo = new THREE.CylinderGeometry(s * 0.35, s * 0.42, 0.7, 6)
         mat = new THREE.MeshStandardMaterial({
-          color: 0x445566,
-          emissive: 0x112233,
+          color: p.blockerColor,
+          emissive: p.blockerEmissive,
           emissiveIntensity: 0.4,
           roughness: 0.5,
           metalness: 0.6
@@ -155,9 +204,9 @@ export class GridSystem {
         // Crystal cap
         const capGeo = new THREE.ConeGeometry(s * 0.3, 0.35, 6)
         const capMat = new THREE.MeshStandardMaterial({
-          color: 0x6688aa,
-          emissive: 0x224466,
-          emissiveIntensity: 0.8,
+          color: p.blockerCap,
+          emissive: p.blockerEmissive,
+          emissiveIntensity: 1.2,
           roughness: 0.2,
           metalness: 0.9,
           transparent: true,
@@ -170,7 +219,7 @@ export class GridSystem {
       }
 
       case TILE_CRATER: {
-        // Base floor
+        // Base floor (lava pool / sinkhole)
         geo = new THREE.CylinderGeometry(s * 0.46, s * 0.42, 0.08, 12)
         mat = new THREE.MeshStandardMaterial({
           color: 0x020308,
@@ -180,31 +229,37 @@ export class GridSystem {
         mesh = new THREE.Mesh(geo, mat)
         mesh.position.set(x, -0.1, z)
 
-        // Inner void
+        // Inner void glow
         const voidGeo = new THREE.CylinderGeometry(s * 0.28, s * 0.2, 0.15, 12)
         const voidMat = new THREE.MeshStandardMaterial({
-          color: 0x110022,
-          emissive: 0x440022,
-          emissiveIntensity: 1.5,
+          color: p.craterVoid,
+          emissive: p.craterVoid,
+          emissiveIntensity: 2.5,
           roughness: 1.0
         })
         const voidMesh = new THREE.Mesh(voidGeo, voidMat)
         voidMesh.position.set(x, -0.12, z)
         this.gridGroup.add(voidMesh)
 
-        // Crater rim — glowing orange/red
+        // Crater rim — glowing in chapter color
         const rimGeo = new THREE.TorusGeometry(s * 0.44, 0.055, 8, 20)
         const rimMat = new THREE.MeshStandardMaterial({
-          color: 0xff3300,
-          emissive: 0xcc1100,
-          emissiveIntensity: 2.0,
+          color: p.craterRim,
+          emissive: p.craterRim,
+          emissiveIntensity: 2.5,
           roughness: 0.5,
           metalness: 0.3
         })
         const rim = new THREE.Mesh(rimGeo, rimMat)
         rim.rotation.x = Math.PI / 2
         rim.position.set(x, -0.02, z)
+        rim.userData.isCraterRim = true
         this.gridGroup.add(rim)
+
+        // Crater light
+        const cLight = new THREE.PointLight(p.craterRim, 0.8, 2.5)
+        cLight.position.set(x, -0.05, z)
+        this.gridGroup.add(cLight)
         break
       }
 
@@ -358,13 +413,14 @@ export class GridSystem {
     const x = offsetX + goal.x
     const z = offsetZ + goal.y
     const s = TILE_SIZE - TILE_GAP
+    const p = this.palette
 
     // Base landing pad
     const padGeo = new THREE.CylinderGeometry(s * 0.47, s * 0.47, 0.08, 16)
     const padMat = new THREE.MeshStandardMaterial({
-      color: 0x00aa55,
-      emissive: 0x005522,
-      emissiveIntensity: 0.8,
+      color: p.goalColor,
+      emissive: p.goalColor,
+      emissiveIntensity: 1.0,
       roughness: 0.3,
       metalness: 0.6
     })
@@ -375,9 +431,9 @@ export class GridSystem {
     // Inner glowing disc
     const geo = new THREE.CylinderGeometry(s * 0.28, s * 0.28, 0.06, 16)
     const mat = new THREE.MeshStandardMaterial({
-      color: 0x00ff88,
-      emissive: 0x00cc55,
-      emissiveIntensity: 3.0,
+      color: p.goalGlow,
+      emissive: p.goalGlow,
+      emissiveIntensity: 3.5,
       roughness: 0.1,
       metalness: 0.4
     })
@@ -390,9 +446,9 @@ export class GridSystem {
     // Outer pulsing ring
     const ringGeo = new THREE.TorusGeometry(s * 0.46, 0.055, 8, 28)
     const ringMat = new THREE.MeshStandardMaterial({
-      color: 0x00ffaa,
-      emissive: 0x00ff88,
-      emissiveIntensity: 2.5,
+      color: p.goalGlow,
+      emissive: p.goalGlow,
+      emissiveIntensity: 3.5,
       roughness: 0.1,
       metalness: 0.7
     })
@@ -409,8 +465,8 @@ export class GridSystem {
     const ring2Geo = new THREE.TorusGeometry(s * 0.32, 0.03, 8, 20)
     const ring2Mat = new THREE.MeshStandardMaterial({
       color: 0xffffff,
-      emissive: 0x88ffcc,
-      emissiveIntensity: 3.0,
+      emissive: p.goalGlow,
+      emissiveIntensity: 4.0,
       roughness: 0.0
     })
     const ring2 = new THREE.Mesh(ring2Geo, ring2Mat)
@@ -424,7 +480,7 @@ export class GridSystem {
     this.gridGroup.add(ring2)
 
     // Goal point light
-    const goalLight = new THREE.PointLight(0x00ff88, 1.5, 3.5)
+    const goalLight = new THREE.PointLight(p.goalGlow, 1.8, 4.0)
     goalLight.position.set(x, 0.5, z)
     this.gridGroup.add(goalLight)
     this.goalMesh.userData.light = goalLight
@@ -434,12 +490,12 @@ export class GridSystem {
     const x = offsetX + col.x
     const z = offsetZ + col.y
 
-    // Diamond gem shape
+    // Signal fragment — octahedral shape, warm gold
     const geo = new THREE.OctahedronGeometry(0.2, 0)
     const mat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      emissive: 0x00ccff,
-      emissiveIntensity: 2.5,
+      color: 0xffffaa,
+      emissive: 0xffcc00,
+      emissiveIntensity: 3.5,
       roughness: 0.0,
       metalness: 1.0,
       transparent: true,
@@ -457,9 +513,9 @@ export class GridSystem {
     // Gem ring halo
     const haloGeo = new THREE.TorusGeometry(0.26, 0.018, 6, 24)
     const haloMat = new THREE.MeshStandardMaterial({
-      color: 0x00ffff,
-      emissive: 0x00aaff,
-      emissiveIntensity: 2.0,
+      color: 0xffdd44,
+      emissive: 0xffaa00,
+      emissiveIntensity: 2.5,
       roughness: 0.1
     })
     const halo = new THREE.Mesh(haloGeo, haloMat)
@@ -468,7 +524,7 @@ export class GridSystem {
     mesh.userData.halo = halo
 
     // Small point light
-    const light = new THREE.PointLight(0x00ccff, 0.8, 2.5)
+    const light = new THREE.PointLight(0xffcc00, 1.0, 2.5)
     light.position.set(0, 0, 0)
     mesh.add(light)
 

@@ -19,7 +19,7 @@ export const desertLevels = [
     id: 1,
     name: 'First Dune',
     chapter: 'desert',
-    narrative: 'The sand grabs at your boots. Use it to brake before you sail past the beacon.',
+    narrative: '"Energy levels dropping…" Environmental resistance detected.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -42,7 +42,7 @@ export const desertLevels = [
     id: 2,
     name: 'Sand River',
     chapter: 'desert',
-    narrative: 'A river of sand cuts through the plain. It will stop you — use it.',
+    narrative: '"Environmental resistance detected." Path unstable.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0],
@@ -68,7 +68,7 @@ export const desertLevels = [
     id: 3,
     name: 'Hourglass',
     chapter: 'desert',
-    narrative: 'Sand dunes form an hourglass — your only path cuts through the narrow middle.',
+    narrative: '"Signal interference increasing…" Path unstable.',
     grid: [
       [3,3,0,0,0,3,3],  // sand wings at top
       [3,3,0,0,0,3,3],
@@ -103,7 +103,7 @@ export const desertLevels = [
     id: 4,
     name: 'Dune Maze',
     chapter: 'desert',
-    narrative: 'The dunes shift. Only one path leads through — choose wisely.',
+    narrative: '"Path unstable." Signal distortion.',
     grid: [
       [0,0,0,0,0,0,0],
       [0,3,0,0,0,3,0],  // sand at (1,1) and (5,1)
@@ -139,7 +139,7 @@ export const desertLevels = [
     id: 5,
     name: 'Quicksand',
     chapter: 'desert',
-    narrative: 'Every patch of sand could be a trap or a lifeline. Read the terrain.',
+    narrative: '"Signal distortion…" Origin unclear.',
     grid: [
       [0,0,3,0,0,3,0],
       [0,0,0,0,0,0,0],
@@ -167,7 +167,7 @@ export const desertLevels = [
     id: 6,
     name: 'Oasis',
     chapter: 'desert',
-    narrative: 'An oasis of empty ground amid endless sand. Navigate the dunes to reach it.',
+    narrative: '"Signal deviation detected." Another fragment recovered.',
     grid: [
       [3,3,3,3,3,3,3,3],
       [3,0,0,0,0,0,0,3],
@@ -202,7 +202,7 @@ export const desertLevels = [
     id: 7,
     name: 'Mirage',
     chapter: 'desert',
-    narrative: 'Ice veins run beneath the sand — slide over them to bypass the desert traps.',
+    narrative: '"Another fragment recovered…" Signal deviation noted.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,3,3,3,3,3,3,0],
@@ -235,7 +235,7 @@ export const desertLevels = [
     id: 8,
     name: 'Sandstorm',
     chapter: 'desert',
-    narrative: 'The final desert trial. Ice, sand, and craters — every mechanic combined.',
+    narrative: '"Signal deviation detected." Navigation fragment secured.',
     grid: [
       [0,0,0,0,0,0,0,0],
       [0,3,0,0,0,0,3,0],  // sand at (1,1) and (6,1)
